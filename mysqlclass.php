@@ -6,6 +6,7 @@ class mysql_dbx {
 	var $rowset = array();
 
 	function mysql_db($dbhost, $dbuser, $dbpass, $database) {
+		echo "<h1>I am in the mysql_db function</h1>";
 		$this->server = $dbhost;
 		$this->user = $dbuser;
 		$this->password = $dbpass;
