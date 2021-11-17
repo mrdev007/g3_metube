@@ -57,7 +57,8 @@
                     {
                         $_SESSION['username'] = $_POST['lusernm'];
                         $_SESSION['logged_in'] = 1;
-                        header("location : browse.php");
+                        header("Location: browse.php");
+                        exit;
                     }
                 }
             }

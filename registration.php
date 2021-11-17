@@ -58,14 +58,15 @@
                     {
                         $id = rand(0000, 9999);
                         $username = $_POST['rusernm'];
-                        $qry = "INSERT INTO account(username, password, email, id) VALUES ('$username', '$pass', '$email', '$id')";
+                        $qry = "INSERT INTO account(username, id, password, email) VALUES ('$username', '$id', '$pass','$email')";
                         $result = mysqli_query($con, $qry);
                         if($result)
                         {
                             $smsg = "User Created Successfully";
                             $_SESSION['username']=$username;
                             $_SESSION['logged_in']=1;
-                            header('Location : browse.php');
+                            header("Location: browse.php");
+                            exit;
                         }
                         else
                         {

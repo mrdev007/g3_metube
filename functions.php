@@ -22,7 +22,7 @@ function user_pass_check($username, $pass)
     {
       return 3;//no user exists
     }
-    elseif(strcmp($row[1], $pass))
+    elseif(strcmp($row[2], $pass))
     {
       return 2; //wrong pass
     }
