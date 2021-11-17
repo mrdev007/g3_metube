@@ -10,7 +10,7 @@ session_start(); ?>
         <nav>
             <a href="browse.php"><img src="img/icon_metube.png" width="85" height="40" alt="logo"></a>
         </nav>
-        <form method="post" action="media_upload_prc.php">
+        <form method="post" action="media_upload_prc.php" enctype="multipart/form-data">
             <input type="hidden" name="MAX_FILE_SIZE" value="10485760"/>
             <label for="file">Add Media <label style="color:#663399"><em>(Each file limit 10MB):</em></label></label>
             <input type="file" name="file" id="file"/><br><br>

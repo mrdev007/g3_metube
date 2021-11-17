@@ -8,6 +8,15 @@ include_once "functions.php";
     <meta charset="utf-8" />
     <title>Metube|Homepage</title>
     <link rel="stylesheet" type="text/css" href="default.css" />
+    <script>
+    <?php
+    if(! empty($_SESSION['logged_in']))
+    {
+    if(isset($_REQUEST['result']) && $_REQUEST['result']!=0)
+	{ ?>
+        alert("<?php echo "Upload failed ".upload_error($_REQUEST['result']); ?>");
+	<?php }} ?>
+</script>
 </head>
 
 <body>
@@ -52,10 +61,6 @@ include_once "functions.php";
         if(! empty($_SESSION['logged_in']))
         {
             $username=$_SESSION['username'];
-            if(isset($_REQUEST['result']) && $_REQUEST['result']!=0)
-		    {
-			    echo upload_error($_REQUEST['result']);
-		    }
             if(isset($_POST['delchannel']))
             {
                 $cname=$_POST['delchannel'];
