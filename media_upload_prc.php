@@ -62,11 +62,11 @@ else
                     {
                         $key_qry=mysqli_query($con, "INSERT into keywords(mediaid, keyword, count) values('$mediaid','$val','$key_count')");
                     }
-                    $qry="INSERT into keywords(mediaid,keyword,count) values('$mediaid','$time','$count')";
+                    $qry="INSERT into keywords(mediaid,keyword,count) values('$mediaid','$time','$key_count')";
                     $res=mysqli_query($con, $qry) or die("Insert into keywords error 1 in media upload process".mysqli_error($con));
-                    $qry="INSERT into keywords(mediaid,keyword,count) values('$mediaid','$size','$count')";
+                    $qry="INSERT into keywords(mediaid,keyword,count) values('$mediaid','$size','$key_count')";
                     $res=mysqli_query($con, $qry) or die("Insert into keywords error 2 in media upload process".mysqli_error($con));
-                    $qry="INSERT into keywords(mediaid,keyword,count) values('$mediaid','$ext','$count')";
+                    $qry="INSERT into keywords(mediaid,keyword,count) values('$mediaid','$ext','$key_count')";
                     $res=mysqli_query($con, $qry) or die("Insert into keywords error 3 in media upload process".mysqli_error($con));
                 }
             }

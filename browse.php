@@ -17,6 +17,16 @@ include_once "functions.php";
         alert("<?php echo "Upload failed ".upload_error($_REQUEST['result']); ?>");
 	<?php }} ?>
 </script>
+<script type="text/javascript">
+    function saveDownload(id)
+    {
+        $.post("media_download_process.php", 
+        {
+            id: id,
+        },
+        function(message){});
+    }
+</script>
 </head>
 
 <body>
@@ -77,7 +87,7 @@ include_once "functions.php";
         <input name="newplaylist" type="text" placeholder="new playlist" maxlength="25">
         <input type="submit" value="Submit" name="plysubmit">
     </form>
-    <h3><a href="manage_playlist.php?user=<?php echo $username; ?>" target="_blank">Manage Playlists</a></h3>
+    <h3><a href="manage_playlists.php?user=<?php echo $username; ?>" target="_blank">Manage Playlists</a></h3>
     <h3>Add new Channel</h3>
     <form method="post" action="browse.php">
         <?php
@@ -148,11 +158,11 @@ include_once "functions.php";
         {
             $typeqry="SELECT mediaid from media";
         }
-        elseif($type == "images")
+        elseif($type == "image")
         {
             $typeqry="SELECT mediaid from media where category='image'";
         }
-        elseif($type == "videos")
+        elseif($type == "video")
         {
             $typeqry="SELECT mediaid from media where category='video'";
         }
@@ -262,8 +272,8 @@ include_once "functions.php";
                     <form method="post" action="browse.php">
                         <select name="type" type="type">
                             <option value="all" selected="selected">All</option>
-                            <option value="images">Images</option>
-                            <option value="videos">Videos</option>
+                            <option value="image">Images</option>
+                            <option value="video">Videos</option>
                             <option value="audio">Audio</option>
                         </select>
                 </td>
@@ -311,17 +321,15 @@ include_once "functions.php";
                 </td>
                 <?php } ?>
                 <td>
-                    <input type="submit" value="Submit" name="categories">
+                    <input type="submit" value="Submit" name="options">
                     </form>
                 </td>
             </tr>
         </table>
         <div class="allmedia">
-            <h3>we are enterting the while in the allmedia</h3>
             <?php
             while($result_row=mysqli_fetch_row($result)) //print the results 
             {
-                echo "<h3>we are in the while loop</h3>";
                 if(empty($_SESSION['logged_in']))
                 {
                     $username="NULL";
@@ -349,7 +357,7 @@ include_once "functions.php";
                 {
                     continue;
                 }
-                $qry="SELECT priority from account INNER JOIN contacts on account.if=contacts.contactid where account.username='$username";
+                $qry="SELECT priority from account INNER JOIN contacts on account.id=contacts.contactid where account.username='$username'";
                 $user_share_res=mysqli_query($con, $qry);
                 $user_share_row1=mysqli_fetch_row($user_share_res);
                 if(($result_row[9]=="friends") && ($user_share_row1[0] != "friend"))
@@ -373,7 +381,6 @@ include_once "functions.php";
                         continue;
                     }
                 } ?>
-                <h3>we are out of the while loop</h3>
                 <div class="mediabox">
                     <?php
                     $mediaid=$result_row[0];
@@ -386,7 +393,6 @@ include_once "functions.php";
                     }
                     else
                     { ?>
-                        <h1>the video will be here</h1>
                         <video width="320" height="240" controls>
                             <source src="<?php echo $filepath.$filename; ?>" type="video/mp4">
                         </video>
@@ -413,7 +419,7 @@ include_once "functions.php";
                     <?php
                     $qry="SELECT views from media where mediaid='$result_row[0]'";
                     $rate_res=mysqli_query($con, $qry);
-                    $rate_row=mysqli_fetch_row($rate_row);
+                    $rate_row=mysqli_fetch_row($rate_res);
                     if($rate_row[0]==NULL)
                     {
                         echo "0";
