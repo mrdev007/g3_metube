@@ -37,11 +37,6 @@ include_once "functions.php";
             {
                 echo "<a href='logout.php'>Logout</a>
                 <a href='update.php'>Profile</a>";
-            }
-            else {
-                echo"<a href='index.php'>Login</a>"; 
-                echo"<a href='registration.php'>Register</a>";
-            }
         ?>
         <a href="wordcloud.php">Word Cloud</a>
         <a href='media_upload.php'>Upload File</a>
@@ -59,9 +54,14 @@ include_once "functions.php";
                 ?>
             </div>
         </div>
+        <?php }
+            else {
+                echo"<a href='index.php'>Login</a>"; 
+                echo"<a href='registration.php'>Register</a>";
+            } ?>
         <div class="search-container">
         <form action="browsefilter.php" method="post">
-            <input type="text" id="searchwords"name="searchwords" placeholder="Search">
+            <input type="text" id="searchwords"name="searchwords" placeholder="Search Keywords">
             <input type="submit" name="submit" value="Search">
         </form>
         </div>
@@ -74,6 +74,7 @@ include_once "functions.php";
             if(isset($_POST['delchannel']))
             {
                 $cname=$_POST['delchannel'];
+                //echo "the user name is ".$username." and the channel name is ".$cname;
                 $qry="DELETE from channels where user='$username' and channel='$cname'";
                 $result=mysqli_query($con, $qry);
                 if(!$result)
@@ -98,14 +99,14 @@ include_once "functions.php";
             echo mysqli_error($con);
         } 
         ?>
-        <select name="new_channel">
+        <select name="newchannel">
             <?php
             while($chnl_row = mysqli_fetch_row($chnl_res))
             { ?>
                <option value="<?php echo $chnl_row[0]; ?>"><?php echo $chnl_row[0]; ?> </option><br>; 
             <?php } ?>
         </select>
-        <input type="submit" name="newchannel" value="Submit">
+        <input type="submit" value="Submit">
     </form>
     <h3>My Channels</h3>
     <?php
@@ -119,7 +120,7 @@ include_once "functions.php";
             <td><?php echo $chnl_row[0]; ?></td>
             <td><form method="post" action="browse.php">
                 <input type="hidden" name="delchannel" value="<?php echo $chnl_row[0]; ?>">
-                <input type="submit" value="Delete" name="delchannel">
+                <input type="submit" value="Delete" >
                 </form>
             </td>
         </tr>
@@ -287,7 +288,7 @@ include_once "functions.php";
                         $playlist_res=mysqli_query($con, $qry); ?>
                         <select name="playlist">
                             <option value="all" selected="selected">ALL</option>
-                            <option value="favourites">Favourites</option>
+                            <option value="favourite">Favourites</option>
                             <?php
                             while($playlst_row=mysqli_fetch_row($playlist_res))
                             { ?>
@@ -343,6 +344,14 @@ include_once "functions.php";
                 $res_row=mysqli_fetch_row($res);
                 $contactid=$res_row[0];
                 $qry="SELECT isblock from contacts where userid='$id' and contactid='$contactid'";
+                $res=mysqli_query($con, $qry);
+                $res_row=mysqli_fetch_row($res);
+                $isblock=$res_row[0];
+                if($isblock=='block')
+                {
+                    continue;
+                }
+                $qry="SELECT isblock from contacts where userid='$contactid' and contactid='$id'";
                 $res=mysqli_query($con, $qry);
                 $res_row=mysqli_fetch_row($res);
                 $isblock=$res_row[0];

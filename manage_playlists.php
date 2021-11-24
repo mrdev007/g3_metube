@@ -71,6 +71,12 @@
 						<input type="submit" value="Delete Playlist">
 					</form><br>
 				</th>
+				<th>
+					<form method="post" action="rename_playlist.php?id=<?php echo $row[0]; ?>">
+						<input type="hidden" name="old_name" value="<?php echo $row[0]; ?>">
+						<input type="submit" value="Rename" name="rename_playlist">
+					</form>
+				</th>
 			</tr>
 			<?php
 				$qry = "SELECT media.mediaid, title FROM media INNER JOIN playlists ON media.mediaid=playlists.mediaid WHERE playlists.username='$username' AND playlists.playlist='$playlistname'";

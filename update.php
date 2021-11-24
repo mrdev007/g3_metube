@@ -83,15 +83,15 @@ include_once "functions.php";
 
         if(isset($_POST['delcontact']))
         {
-            $delusername=$_POST['delcontact'];
+            $delusername=$_POST['delcontactv'];
             $res=mysqli_query($con,"SELECT conversationid from conversations where (userA='$susername' AND userB='$delusername') OR (userB='$susername' AND userA='$delusername')");
             $convid_row=mysqli_fetch_row($res);
             $del_convid=(int)$convid_row[0];
-            $qry = "SELECT id FROM contacts WHERE username='$susername'";
+            $qry = "SELECT id FROM account WHERE username='$susername'";
             $res = mysqli_query($con, $qry);
             $row = mysqli_fetch_row($res);
             $userid = (int)$row[0];
-            $qry = "SELECT id FROM users WHERE username='$delusername'";
+            $qry = "SELECT id FROM account WHERE username='$delusername'";
             $res = mysqli_query($con, $qry);
             $row = mysqli_fetch_row($res);
             $contactid = (int)$row[0];
@@ -143,9 +143,8 @@ include_once "functions.php";
         $res=mysqli_query($con, $qry);
         $row=mysqli_fetch_row($res);
         $userid=$row[0];
-
         $qry="SELECT username, email, priority from account INNER JOIN contacts on account.id=contacts.contactid where contacts.userid='$userid' ORDER BY priority";
-        $res=mysqli_query($con, $qry);
+        $res1=mysqli_query($con, $qry);
 
         if(!$res)
         {
@@ -162,17 +161,18 @@ include_once "functions.php";
                 </tr>
                 <?php
                 $username=$_SESSION['username'];
-                while($row=mysqli_fetch_array($res, MYSQLI_NUM))
+                while($row1=mysqli_fetch_row($res1))
                 { 
-                    $conv_qry="SELECT conversationid from conversations where (userA='$username' and userB='$row[0]') or (userA='$row[0]' and userB='$username')";
+                    $conv_qry="SELECT conversationid from conversations where (userA='$username' and userB='$row1[0]') or (userA='$row1[0]' and userB='$username')";
                     $conv_res=mysqli_query($con, $conv_qry);
+            
                     $conv_row=mysqli_fetch_row($conv_res);
                     $convid=$conv_row[0];
                     ?>
                     <tr>
-                        <td><?php echo $row[0]; ?></td>
-                        <td><?php echo $row[1]; ?></td>
-                        <td><?php echo $row[2]; ?></td>
+                        <td><?php echo $row1[0]; ?></td>
+                        <td><?php echo $row1[1]; ?></td>
+                        <td><?php echo $row1[2]; ?></td>
                         <td><a href="message.php?id=<?php echo $convid; ?>" target="_blank">Message</a></td> 
                     </tr>
                     <?php
@@ -182,7 +182,7 @@ include_once "functions.php";
                         $res=mysqli_query($con, $qry);
                         $res_row=mysqli_fetch_row($res);
                         $id=$res_row[0];
-                        $qry="SELECT id from account where username='$row[0]'";
+                        $qry="SELECT id from account where username='$row1[0]'";
                         $res=mysqli_query($con, $qry);
                         $res_row=mysqli_fetch_row($res);
                         $contact_id=$res_row[0];
@@ -194,7 +194,7 @@ include_once "functions.php";
                             <td>
                                 <form method="post" action="update.php">
                                     <input type="hidden" name="block" value="<?php echo $contact_id; ?>"/>
-                                    <input type="submit" value="Block" name="block"/><br>
+                                    <input type="submit" value="Block"/><br>
                                 </form>
                             </td>
                         <?php } 
@@ -203,7 +203,7 @@ include_once "functions.php";
                             <td>
                                 <form method="post" action="update.php">
                                     <input type="hidden" name="unblock" value="<?php echo $contact_id; ?>"/>
-                                    <input type="submit" value="Unblock" name="unblock"/><br>
+                                    <input type="submit" value="Unblock" /><br>
                                 </form>
                             </td>
                         <?php } 
@@ -211,11 +211,11 @@ include_once "functions.php";
                      ?>
                         <td>
                             <form method="post" action="update.php">
-                                <input type="hidden" name="delcontact" value="<?php echo $row[0]; ?>"/>
+                                <input type="hidden" value="<?php echo $row1[0]; ?>" name="delcontactv" >
                                 <input type="submit" value="Delete" name="delcontact"/><br>
                             </form>
                         </td>
-                    <?php } 
+                    <?php }
             } ?>
         </table>
         <p>Click <a href="add_contact.php">here</a> to add a contact by username</p>
@@ -251,26 +251,28 @@ include_once "functions.php";
                 <td>Message</td>
             </tr>
             <?php
-            $qry="SELECT id from account where username='$susername'";
+            $username=$_SESSION['username'];
+            $qry="SELECT id from account where username='$username'";
             $res=mysqli_query($con, $qry);
             $row=mysqli_fetch_row($res);
             $userid=$row[0];
-            $qry="SELECT username,email from account INNER JOIN contacts on account.id=contacts.userid where contacts.userid='$userid' and contacts.priority='friends'";
+            $qry="SELECT username,email from account INNER JOIN contacts on account.id=contacts.contactid where contacts.userid='$userid' and contacts.priority='friend'";
             $res=mysqli_query($con, $qry);
             while($row=mysqli_fetch_array($res, MYSQLI_NUM))
             {
-                $conv_qry="SELECT conversationid  from conversations where (userA='$susername' and userB='$row[0]' or (userA='$row[0]' and userB='$susername')";
+                $conv_qry="SELECT conversationid  from conversations where (userA='$username' and userB='$row[0]') or (userA='$row[0]' and userB='$username')";
                 $conv_res=mysqli_query($con, $conv_qry);
                 $conv_row=mysqli_fetch_row($conv_res);
-                $conv_id=$conv_row[0]; ?>
+                $conv_id=$conv_row[0];
+                 ?>
                 <tr>
                     <td><?php echo $row[0]; ?></td>
                     <td><?php echo $row[1]; ?></td>
-                    <td><a href="message.php?id='<?php echo $conv_id; ?>'" target="_blank">Message</a></td>
+                    <td><a href="message.php?id=<?php echo $conv_id; ?>" target="_blank">Message</a></td>
                     <td>
                         <form method="post" action="update.php">
-                            <input type="hidden" name="del_contact" value="<?php echo $row[0]; ?>"/>
-                            <input type="submit" value="Delete" name="del_contact"/>
+                            <input type="hidden" name="delcontactv" value="<?php echo $row[0]; ?>"/>
+                            <input type="submit" value="Delete" name="delcontact"/>
                         </form>
                     </td>
                 </tr>
@@ -324,7 +326,7 @@ include_once "functions.php";
             while($row=mysqli_fetch_array($res, MYSQLI_NUM))
             { ?>
                 <tr valign="top">
-                    <td><h3><a href="media.php?id='<?php echo $row[0]; ?>'" target="_blank"><?php echo $row[4]; ?></a></h3> </td>
+                    <td><h3><a href="media.php?id=<?php echo $row[0]; ?>" target="_blank"><?php echo $row[4]; ?></a></h3> </td>
                     <td><?php echo $row[5]; ?></td>
                     <td><?php echo $row[6]; ?></td>
                 </tr>
@@ -336,11 +338,12 @@ include_once "functions.php";
             <tr>
                 <th>Group Name</th>
             </tr>
-            <tr>
                     <?php
                     $qry="SELECT groupname from groups";
-                    $res=mysqli_query($con, $qry);
-                    $groupname=mysqli_fetch_row($res);
+                    $res1=mysqli_query($con, $qry);
+                    $ind=0;
+                    while($groupname=mysqli_fetch_row($res1)){
+                        echo "<tr>";
                     if($groupname!=NULL){
                     echo "<td>";
                     $qry="SELECT username from group_messages where groupname='$groupname[0]' and username='$susername'";
@@ -357,7 +360,6 @@ include_once "functions.php";
                     <a href="<?php echo $href; ?>" target="_blank"><?php echo $groupname[0]; ?></a>
                 </td>
                 <?php
-                echo $groupname[0];
                 $qry="SELECT username from group_messages where groupname='$groupname[0]' and username='$susername'";
                 $res=mysqli_query($con, $qry);
                 $usrname=mysqli_fetch_row($res);
@@ -378,12 +380,13 @@ include_once "functions.php";
                             <input type="submit" name="join" value="Join"/>
                         </form><br>
                     </td>
-                <?php } }?>
+                <?php } } }?>
             </tr>
-            <?php
+            
+        </table>
+        <?php
                 echo "<p> Click <a href='add_group.php'>here</a> to create a new group.</p>";
             ?>
-        </table>
         <form action="browse.php">
             <input type="submit" name="home" value="Cancel"/>
         </form>
@@ -410,6 +413,7 @@ if(isset($_POST['leave']))
     if(!$res)
     {
         echo "leave failed. ".mysqli_error($con);
-    }
+    } ?>
+    <meta http-equiv="refresh" content="0;url=update.php"><?php
 }
 ?>

@@ -8,17 +8,9 @@ session_start();
     <body>
     <nav>
         <a href="browse.php"><img src="img/icon_metube.png" width="85" height="40" alt="logo"></a>
-        <?php
-        if(!empty($_SESSION['logged_in']))
-        {
-            echo "<a href='logout.php'>Logout</a>
-            <a href='update.php'>Profile</a>";
-            }
-            else {
-                
+        <?php   
                 echo"<a href='index.php'>Login</a>
                 <a href='registration.php' >Register</a>";
-            }
         ?>
         </nav>
     </body>

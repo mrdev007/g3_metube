@@ -5,7 +5,7 @@
 ?>	
 <html>
 <head>
-<title>Groups</title>
+<title>Message</title>
 </head>
 
 <body>
@@ -24,37 +24,49 @@
     }
   ?>
 </nav>
-</body>
-
 <?php 
+	$username=$_SESSION['username'];
+	$qry="SELECT id from account where username='$username'";
+	$res=mysqli_query($con, $qry);
+	$row=mysqli_fetch_row($res);
+	$id=$row[0];
+	$qry="SELECT * from contacts where (userid='$id' and isblock='block') or (contactid='$id' and isblock='block')";
+	$res=mysqli_query($con,$qry);
+	$row=mysqli_fetch_row($res);
+	if($row[0]==NULL){
 	if(isset($_POST['submit'])){
 		$username = $_SESSION['username'];
-		$groupname = $_GET["id"];
+		$convid = $_GET['id'];
 		$msg = $_POST['message'];
-		$qry = "INSERT INTO group_messages(groupname, username, message) VALUES ('$groupname', '$username', '$msg')";
+		$qry = "INSERT INTO messages(convid, sender, message) VALUES ('$convid', '$username', '$msg')";
 		$res = mysqli_query($con, $qry);
 
 		if($res){
 			$smsg = "Message Created Successfully";
-			$msgpath='Location: groups.php?id='.$_GET["id"];
+			$msgpath='Location: message.php?id='.$_GET["id"];
 			header($msgpath);
 		}
 		else {
 			$fmsg = "Message Failed".mysqli_error($con);
 		}
+	} }
+	else
+	{
+		echo "<h3 style=\"color:red;\">Sorry cannot send a message as this user is blocked.</h3>";
 	}
 ?>
 <?php
-	$groupname = $_GET["id"];
-	$qry = "SELECT * FROM group_messages WHERE groupname='$groupname'";
+	$convid = $_GET['id']; 
+	$qry = "SELECT userA, userB FROM conversations WHERE conversationid='$convid'";
+	$users_result = mysqli_query($con, $qry);
+	$user_row = mysqli_fetch_row($users_result);
+	$userA = $user_row[0];
+	$userB = $user_row[1];
+	$qry = "SELECT * FROM messages WHERE convid='".$_GET['id']."'"."ORDER BY timesent";
 	$res = mysqli_query($con, $qry);
-	$qry = "SELECT topic, discussion FROM groups WHERE groupname='$groupname'";
-	$r = mysqli_query($con, $qry);
-	$r_row = mysqli_fetch_row($r);
 ?>
-<h1>Topic:<?php echo $r_row[0]?></h1>
-<h3>Discussion:<?php echo $r_row[1]; ?></h3>
-<h4>Messages</h4>
+
+<h4>Messages between <?php echo $userA." and ".$userB; ?></h4>
 <table>
 	<tr>
 		<th>Username</th>
@@ -63,7 +75,6 @@
 
 	<?php
 		while ($row = mysqli_fetch_array($res, MYSQLI_NUM)) {
-			
 	?>
 		<tr>
 			<td><?php echo $row[1] ?></td>
@@ -71,7 +82,7 @@
 		</tr>
 		<?php } ?>
 		<?php 
-			$msgpath="groups.php?id=".$_GET["id"]; ?> 
+			$msgpath="message.php?id=".$_GET["id"]; ?> 
 				<form method="POST" action=<?php echo $msgpath ?>>
 					<tr>
 						<td></td>
@@ -80,6 +91,12 @@
 					</tr>
 				</form>
 </table>
-<?php
-if(isset($fmsg)) echo $fmsg;
-if(isset($smsg)) echo $smsg; ?>
+<?php 
+if(isset($smsg))
+{
+	echo $smsg;
+}
+if(isset($fmsg))
+{
+	echo $fmsg;
+}

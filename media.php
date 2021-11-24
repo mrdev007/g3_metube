@@ -24,12 +24,23 @@ include_once "functions.php";
         ?>
     </nav>
     <?php
+    if(!empty($_SESSION['logged_in']))
+    {
+    $username=$_SESSION['username'];
+	$qry="SELECT id from account where username='$username'";
+	$res=mysqli_query($con, $qry);
+	$row=mysqli_fetch_row($res);
+	$id=$row[0];
+	$qry="SELECT * from contacts where contactid='$id' and isblock='block'";
+	$res=mysqli_query($con,$qry);
+	$row=mysqli_fetch_row($res);}
+    else{
+        $row=[NULL];
+    }
+    if($row[0]==NULL){
     if(isset($_GET['id']))
     {
         $mediaid=$_GET['id'];
-        $qry="UPDATE media set lastaccesstime=NOW() where mediaid='$mediaid'";
-        $res=mysqli_query($con, $qry) or die("could not update the last access time in media.php in first line<br>".mysqli_error($con));
-        
         $qry="SELECT * from media where mediaid='$mediaid'";
         $res=mysqli_query($con, $qry);
         $media_row=mysqli_fetch_row($res);
@@ -47,7 +58,7 @@ include_once "functions.php";
         if($res)
         {
             $smsg="Comment created sucessfully";
-            header("Location: media.php?id='$mediaid'");
+            header("Location: media.php?id=$mediaid");
         }
         else
         {
@@ -130,14 +141,14 @@ include_once "functions.php";
         { ?>
             <form method="post" action="<?php echo $action; ?>">
                 <input type="hidden" name="favourite" value="<?php echo $mediaid; ?>">
-                <input type="submit" value="Favourite" name="favourite">
+                <input type="submit" value="Favourite" >
             </form><br>
         <?php }      
         else
         { ?>
             <form method="post" action="<?php echo $action; ?>">
                 <input type="hidden" name="unfavourite" value="<?php echo $mediaid; ?>">
-                <input type="submit" value="Unavourite" name="unfavourite">
+                <input type="submit" value="Unfavourite" >
             </form><br>
         <?php } 
 
@@ -151,14 +162,14 @@ include_once "functions.php";
         if($row[0]==0)
         { ?>
             <form method="post" action="<?php echo $action; ?>">
-                <input type="hidden" name="subscribe" value="<?php echo $user; ?>"/>
+                <input type="hidden" name="subscribe1" value="<?php echo $user; ?>"/>
                 <input type="submit" name="subscribe" value="Subscribe"/>
             </form><br>
         <?php } 
         else
         { ?>
             <form method="post" action="<?php echo $action; ?>">
-                <input type="hidden" name="unsubscribe" value="<?php echo $user; ?>"/>
+                <input type="hidden" name="unsubscribe1" value="<?php echo $user; ?>"/>
                 <input type="submit" name="unsubscribe" value="Unubscribe"/>
             </form><br>
         <?php } ?>
@@ -179,30 +190,47 @@ include_once "functions.php";
         </form>
 
     <?php } 
+    if(!empty($_SESSION['logged_in']))
+    {
     $username=$_SESSION['username'];
     if(isset($_POST['favourite']))
     {
         $mediaid=$_POST['favourite'];
-        $qry="INSERT into playlists(playlist, username, mediaid) values('favourites','$username','$mediaid')";
+        $qry="INSERT into playlists(playlist, username, mediaid) values('favourite','$username','$mediaid')";
         $res=mysqli_query($con, $qry);
+        $action="media.php?id=".$mediaid;
+        ?>
+        <meta http-equiv="refresh" content="0;url=<?php echo $action; ?>"><?php
     }
     
     if(isset($_POST['unfavourite']))
     {
         $mediaid=$_POST['unfavourite'];
-        $res=mysqli_query($con, "DELETE from playlists where playlist='favourites' and username='$username' and mediaid='$mediaid'");
+        $res=mysqli_query($con, "DELETE from playlists where playlist='favourite' and username='$username' and mediaid='$mediaid'");
+        $action="media.php?id=".$mediaid;
+        ?>
+        <meta http-equiv="refresh" content="0;url=<?php echo $action; ?>"><?php
     }
 
     if(isset($_POST['subscribe']))
     {
-        $user=$_POST['subscribe'];
-        $res=mysqli_query($con, "INSERT into subscribe(username, owner, subscribed) values('$username','$user','yes')");
+        $user=$_POST['subscribe1'];
+        $action="media.php?id=".$mediaid;
+        $res=mysqli_query($con, "SELECT * from subscribe where username='$username' and owner='$user'");
+        $row=mysqli_fetch_row($res);
+        if($row[0]==NULL && $user!=$username){
+            $res=mysqli_query($con, "INSERT into subscribe(username, owner, subscribed) values('$username','$user','yes')");
+        } ?>
+        <meta http-equiv="refresh" content="0;url=<?php echo $action; ?>"><?php
     }
 
     if(isset($_POST['unsubscribe']))
     {
-        $user=$_POST['unsubscribe'];
+        $user=$_POST['unsubscribe1'];
+        $action="media.php?id=".$mediaid;
         $res=mysqli_query($con, "DELETE from subscribe where username='$username' and owner='$user' and subscribed='yes'");
+        ?>
+        <meta http-equiv="refresh" content="0;url=<?php echo $action; ?>"><?php
     }
 
     if(isset($_POST['add_to_playlist']))
@@ -226,7 +254,7 @@ include_once "functions.php";
         {
             echo 'This already exists in this playlist';
         }
-    } ?>
+    } } ?>
 
     <br><br>
     <p>Owner: <?php echo $media_row[7]; ?></p>
@@ -332,6 +360,10 @@ include_once "functions.php";
                 <h4><a href="media.php?id=<?php echo $_GET['id']; ?>" target="_blank"><?php echo $res1_row[4]; ?></a></h4>
            <?php }
         }
+    }}
+    else
+    {
+        echo "no such files found";
     }
 ?>
     </body>

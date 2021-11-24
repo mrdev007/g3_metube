@@ -71,7 +71,7 @@ if(isset($_POST['submit'])) {
 		</tr>
 		<tr>
 			<td  width="20%">Discussion:</td>
-			<td width="80%"><input class="text"  type="text" name="discussion" maxlength="15"><br /></td>
+			<td width="80%"><input class="text"  type="text" name="discussion" maxlength="50"><br /></td>
 		</tr>
         <tr>
 		<td><input name="submit" type="submit" value="Submit"><br /></td>
