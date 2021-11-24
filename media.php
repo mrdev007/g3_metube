@@ -35,9 +35,9 @@ include_once "functions.php";
 	$res=mysqli_query($con,$qry);
 	$row=mysqli_fetch_row($res);}
     else{
-        $row=['NULL'];
+        $row=[];
     }
-    if($row[0]==NULL){
+    if($row==NULL){
     if(isset($_GET['id']))
     {
         $mediaid=$_GET['id'];
