@@ -35,7 +35,7 @@ include_once "functions.php";
 	$res=mysqli_query($con,$qry);
 	$row=mysqli_fetch_row($res);}
     else{
-        $row=[NULL];
+        $row=['NULL'];
     }
     if($row[0]==NULL){
     if(isset($_GET['id']))
