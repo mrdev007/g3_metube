@@ -349,7 +349,7 @@ include_once "functions.php";
                     $qry="SELECT username from group_messages where groupname='$groupname[0]' and username='$susername'";
                     $res=mysqli_query($con, $qry);
                     $row=mysqli_fetch_row($res);
-                    if($res != NULL && $row[0]==$susername)
+                    if($row != NULL && $row[0]==$susername)
                     {
                         $href="groups.php?id=".$groupname[0];
                     }
@@ -363,7 +363,7 @@ include_once "functions.php";
                 $qry="SELECT username from group_messages where groupname='$groupname[0]' and username='$susername'";
                 $res=mysqli_query($con, $qry);
                 $usrname=mysqli_fetch_row($res);
-                if($res != NULL && $usrname[0]==$susername)
+                if($usrname != NULL && $usrname[0]==$susername)
                 { ?>
                     <td>
                         <form method="post" action="update.php">
