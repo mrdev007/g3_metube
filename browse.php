@@ -346,16 +346,8 @@ include_once "functions.php";
                 $qry="SELECT isblock from contacts where userid='$id' and contactid='$contactid'";
                 $res=mysqli_query($con, $qry);
                 $res_row=mysqli_fetch_row($res);
-                $isblock=$res_row[0];
-                if($res_row[0]=='block')
-                {
-                    continue;
-                }
-                $qry="SELECT isblock from contacts where userid='$contactid' and contactid='$id'";
-                $res=mysqli_query($con, $qry);
-                $res_row=mysqli_fetch_row($res);
-                $isblock=$res_row[0];
-                if($isblock[0]=='block')
+                //$isblock=$res_row[0];
+                if($res_row != NULL && $res_row[0]=='block')
                 {
                     continue;
                 }
