@@ -89,7 +89,7 @@ function addContact($username, $contactname, $relation)
 	$query = "SELECT isblock FROM contacts WHERE userid='$contactid' and contactid='$userid'";
 	$result = mysqli_query($con, $query);
 	$row = mysqli_fetch_row($result);
-	if($row[0]=="block")
+	if($row != NULL && $row[0]=="block")
 		return 4;
 	$query = "INSERT INTO contacts(userid, contactid, priority) VALUES ('$userid', '$contactid', '$relation')";
 	$result = mysqli_query($con, $query);
