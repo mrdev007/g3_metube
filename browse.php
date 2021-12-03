@@ -346,19 +346,21 @@ include_once "functions.php";
                 $qry="SELECT isblock from contacts where userid='$id' and contactid='$contactid'";
                 $res=mysqli_query($con, $qry);
                 $res_row=mysqli_fetch_row($res);
+                if($res_row != NULL){
                 $isblock=$res_row[0];
                 if($isblock=='block')
                 {
                     continue;
-                }
+                }}
                 $qry="SELECT isblock from contacts where userid='$contactid' and contactid='$id'";
                 $res=mysqli_query($con, $qry);
                 $res_row=mysqli_fetch_row($res);
+                if($res_row != NULL){
                 $isblock=$res_row[0];
                 if($isblock=='block')
                 {
                     continue;
-                }
+                }}
                 $qry="SELECT user from media where mediaid='$result_row[0]'";
                 $user_share_res=mysqli_query($con, $qry);
                 $user_share_row=mysqli_fetch_row($user_share_res);
