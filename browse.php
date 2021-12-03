@@ -342,7 +342,9 @@ include_once "functions.php";
                 $qry="SELECT id from account where username='$username'";
                 $res=mysqli_query($con, $qry);
                 $res_row=mysqli_fetch_row($res);
-                $contactid=$res_row[0];
+                if($res_row != NULL)
+                {
+                    $contactid=$res_row[0];
                 $qry="SELECT isblock from contacts where userid='$id' and contactid='$contactid'";
                 $res=mysqli_query($con, $qry);
                 $res_row=mysqli_fetch_row($res);
@@ -350,7 +352,7 @@ include_once "functions.php";
                 if($res_row != NULL && $res_row[0]=='block')
                 {
                     continue;
-                }
+                }}
                 $qry="SELECT user from media where mediaid='$result_row[0]'";
                 $user_share_res=mysqli_query($con, $qry);
                 $user_share_row=mysqli_fetch_row($user_share_res);
